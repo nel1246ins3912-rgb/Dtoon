@@ -161,4 +161,11 @@ if ($cmpExit -eq 0) {
     Write-Host "==> [$TestName] compare.py ERROR" -ForegroundColor Red
 }
 
+# Auto-sync to GitHub so Claude sees results without manual push
+Push-Location $PSScriptRoot\..\..
+git add -A
+git commit -m "harness $TestName $(Get-Date -Format 'MM-dd HH:mm')" 2>$null
+git push 2>$null
+Pop-Location
+
 exit $cmpExit

@@ -186,3 +186,23 @@ visual verification to a different geometry context, do not continue
 parameter tuning. Light-aware rim validates naturally on character
 meshes (hair-on-face shadows, jaw-on-neck shadows) where outlines
 don't dominate the silhouette.
+
+2026-05-08 | Phase 3 cycle 1: stepped spec formula inverted
+(smoothstep on raw NdotH before pow) gave broad colored lobes not
+pinpricks | Raw NdotH > threshold across most of the lit hemisphere,
+so smoothstep saturated to 1 and pow(1,n)=1 everywhere | For
+Blinn-Phong stepped spec, pow(NdotH,power) FIRST, smoothstep SECOND.
+Check ALGORITHMS.md ordering before authoring.
+
+2026-05-08 | Codex self-assessment said specular invisible (b) but
+Claude visual review said clearly visible (a) | Codex's conservative
+beauty read undercounted highlight visibility, same pattern as the
+8-cycle rim episode | Visual PASS/FAIL is Claude's call per AGENTS.md.
+When Codex reports "subtle/not visible" but math + params are correct,
+escalate to Claude review rather than auto-tuning further.
+
+2026-05-08 | Test harness needs higher spec intensity than shipped
+default to read on primitive spheres | Primitives lack ILM modulation
+that characters have; demo intensity 2-3x shipped default | Keep
+shader default _SpecularIntensity approximately 1.0; bake demo
+intensities into HarnessRunner.cs, not the shader.

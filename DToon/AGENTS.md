@@ -113,7 +113,7 @@ them in the inspector.
 | 3 | done | Inverted-hull outline pass with albedo darkening, screen-space constant thickness, alpha-clip support. Implemented as DToon/Outline shader paired with main DToon/Character via OutlinePairCreator. Outline applied to all baseline scenes (Step1, Step2, Step3). |
 | 4 Phase 1 | partial done | Rim light infrastructure (DToon_RimMask, uniform + light-aware modes, _RimColor with HDR support, _RimPower/Intensity/Softness properties). Step4_Rim_Closeup reference registered with uniform mode. Light-aware visual deferred to character import. |
 | 4 Phase 2 | done | Matcap with Additive/Multiplicative/Lerp composition modes, view-space normal sampling, MatcapGenerator utility producing 4 default matcaps (Eye_Glossy, Metal_Chrome, Skin_Soft, Cloth_Velvet). Step4_Matcap_Closeup reference registered. Phase 1 PARTIAL retained. |
-| 4 Phase 3 | pending | Stepped specular |
+| 4 Phase 3 | done | Stepped specular: pow(NdotH,power) Blinn-Phong peak then smoothstep AA in specRaw space. Per-material Power/Threshold/Softness/Intensity. 4 test materials (Metal/Skin/Plastic/Hair) with differentiated highlights. Step4_Specular_Closeup reference registered. |
 | 5 | pending | `DToonCharacterGUI` custom material inspector |
 | 6 | pending | `SmoothNormalBaker` editor tool |
 | 7 | pending | ILM texture system |

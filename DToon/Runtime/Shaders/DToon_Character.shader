@@ -52,7 +52,7 @@ Shader "DToon/Character"
         [Header(Stepped Specular)]
         [Toggle(_SPECULAR)] _SpecularEnable ("Enable Specular", Float) = 0
         [HDR] _SpecularColor ("Specular Color", Color) = (1, 1, 1, 1)
-        _SpecularIntensity  ("Specular Intensity", Range(0, 5)) = 1.0
+        _SpecularIntensity  ("Specular Intensity", Range(0, 5)) = 1.0 // Harness demo uses 1.2-3.0 for primitive visibility; shipped default 1.0 is conservative for ILM-driven character workflows (Step 7).
         _SpecularPower      ("Specular Power (Sharpness)", Range(1, 256)) = 32
         _SpecularThreshold  ("Specular Threshold", Range(0, 1)) = 0.5
         _SpecularSoftness   ("Specular Edge Softness", Range(0, 0.5)) = 0.05

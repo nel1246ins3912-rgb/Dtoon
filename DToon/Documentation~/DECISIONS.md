@@ -132,3 +132,15 @@ range of artistic uses. MatcapGenerator follows the RampTextureGenerator
 pattern (Step 1) for default-asset reproducibility.
 **Reversibility**: easy - material toggle disables matcap, generator can
 be modified to produce different defaults.
+
+## 2026-05-08 - Step 4 Phase 3: stepped specular formula + closeout
+**Decision**: specMask = smoothstep(thr-soft, thr+soft, pow(NdotH,
+power)). pow FIRST for the peaked Blinn-Phong shape, smoothstep
+SECOND for cel-edge AA in specRaw space.
+**Alternatives considered**: smoothstep on raw NdotH then pow (cycle 1
+bug - produced broad lobes, mask approximately 1 across lit hemisphere);
+hard step (aliases on curves).
+**Rationale**: pow establishes the tight highlight; smoothstep only
+anti-aliases the cel edge. Matches NiloToon/lilToon. Visual PASS on
+x2-intensity 4-sphere harness, Claude-approved.
+**Reversibility**: easy - one-block edit in ToonSpecular.hlsl.

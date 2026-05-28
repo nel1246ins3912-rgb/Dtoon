@@ -1,6 +1,6 @@
 # Project State
 
-Last updated: 2026-05-05 by codex
+Last updated: 2026-05-29 by codex
 
 ## Where we are
 - Step 4 Phase 1: PARTIAL DONE
@@ -12,7 +12,14 @@ Last updated: 2026-05-05 by codex
   - Matcap infrastructure complete (Add/Mul/Lerp modes, 4 default
     matcaps, MatcapGenerator utility)
   - Step4_Matcap_Closeup reference registered
-- Awaiting: Step 4 Phase 3 (stepped specular)
+- Step 4 Phase 3: DONE
+  - Stepped specular infrastructure complete
+  - Step4_Specular_Closeup reference registered
+- Step 4: COMPLETE
+  - Phase 1: PARTIAL DONE
+  - Phase 2: DONE
+  - Phase 3: DONE
+- Awaiting: Step 5 (DToonCharacterGUI inspector)
 
 ## What's not yet validated
 - Cast shadow visual lerp on production fragment - code is correct
