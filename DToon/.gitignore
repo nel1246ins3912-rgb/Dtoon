@@ -11,6 +11,6 @@ Thumbs.db
 
 # Editor backup
 *.swp
-*~
+*.bak~
 
 # Note: keep .meta files for everything else under Assets/. Unity needs them.
