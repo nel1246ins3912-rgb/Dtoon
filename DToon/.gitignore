@@ -1,0 +1,16 @@
+# Harness transient output
+HarnessOutput/
+
+# Python cache (compare.py)
+__pycache__/
+*.pyc
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor backup
+*.swp
+*~
+
+# Note: keep .meta files for everything else under Assets/. Unity needs them.

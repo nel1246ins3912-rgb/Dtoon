@@ -1,0 +1,21 @@
+{
+  "name": "com.dtoon.shader",
+  "version": "0.0.34",
+  "displayName": "DToon",
+  "description": "Anime-style toon shader package for Unity URP. Designed with engine portability in mind (Unity URP 14/17, Unreal Engine).",
+  "unity": "2022.3",
+  "keywords": [
+    "toon",
+    "shader",
+    "anime",
+    "vtuber",
+    "urp",
+    "stylized"
+  ],
+  "author": {
+    "name": "DToon"
+  },
+  "dependencies": {
+    "com.unity.render-pipelines.universal": "14.0.0"
+  }
+}
