@@ -4,8 +4,11 @@ Temp/
 Logs/
 obj/
 Build/
+[Bb]uild/
+UserSettings/
 *.csproj
 *.sln
+*.unityproj
 
 # OS
 .DS_Store
