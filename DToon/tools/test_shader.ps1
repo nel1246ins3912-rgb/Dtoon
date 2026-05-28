@@ -163,9 +163,10 @@ if ($cmpExit -eq 0) {
 
 # Auto-sync to GitHub so Claude sees results without manual push
 Push-Location $PSScriptRoot\..\..
-git add -A
-git commit -m "harness $TestName $(Get-Date -Format 'MM-dd HH:mm')" 2>$null
-git push 2>$null
+$commitMessage = "harness $TestName $(Get-Date -Format 'MM-dd HH:mm')"
+cmd /c "git add -A 1>NUL 2>NUL"
+cmd /c "git commit -m `"$commitMessage`" 1>NUL 2>NUL"
+cmd /c "git push 1>NUL 2>NUL"
 Pop-Location
 
 exit $cmpExit
