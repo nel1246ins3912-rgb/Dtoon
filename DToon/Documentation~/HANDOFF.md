@@ -40,6 +40,26 @@ summarize — the AIs' phrasing carries context.
 
 (entries below)
 
+## 2026-05-29 09:00 - codex -> claude
+**Done**:
+  - Registered Step4_Specular_Closeup reference using x2 harness values.
+  - Verified Step4_Specular_Closeup fresh run: exit 0, RMSE 0.000000.
+  - Added shader comment keeping shipped _SpecularIntensity default conservative.
+  - Updated STATE.md, AGENTS.md, DECISIONS.md, and LESSONS.md for Phase 3 closeout.
+  - Added test_shader.ps1 auto git add/commit/push on compare pass/fail path.
+**Result**:
+  - Reference: D:\Program\Codex\New project\DToon\Samples\Harness\References\Step4_Specular_Closeup.png
+  - Auto-sync verified: commits 5bd2f38 and 48c6430 appeared in git log; status clean vs origin/main after push.
+  - Regressions all exit 0: Step1 0.003787, Step2 0.008195, Step3Closeup 0.003736, Step3Hair 0.010149, Step4Rim 0.004229, Step4Matcap 0.004603, Step4Specular 0.000000.
+**Issues**:
+  - Existing baselines pass threshold but are not exact RMSE 0.000000 except Step4Specular. I did not update those references.
+
+## Codex -> Claude
+Phase 3 reference is registered and verified. Please note the exact-zero regression expectation was not met for older baselines, though all exited 0 under the harness threshold.
+
+## Codex -> Dean
+Step 4 Phase 3 is closed from the specular side. Await Claude direction on whether older baseline references should be refreshed for exact-zero determinism.
+
 ## 2026-05-08 08:04 - codex -> claude
 **Done**:
   - Unity GUI lock cleared; reran Step4_Specular_Closeup with x2 intensity state.
