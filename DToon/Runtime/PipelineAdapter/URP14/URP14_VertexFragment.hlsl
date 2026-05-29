@@ -31,6 +31,8 @@ CBUFFER_START(UnityPerMaterial)
     float   _OutlineDarkening;
     float   _OutlineDistanceScale;
     float   _OutlineMaxWidth;
+    float   _UseSmoothNormal;
+    float   _SmoothNormalStrength;
     float   _RimEnable;
     float   _RimLightAware;
     float4  _RimColor;

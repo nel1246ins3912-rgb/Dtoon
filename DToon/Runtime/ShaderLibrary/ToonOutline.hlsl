@@ -19,6 +19,24 @@
 
 #include "ToonCore.hlsl"
 
+float3 DToon_SelectOutlineNormalOS(
+    float3 normalOS,
+    float4 smoothNormalOS,
+    float  smoothNormalStrength
+)
+{
+    float3 extrudeNormalOS = normalOS;
+
+#if defined(_USE_SMOOTH_NORMAL)
+    if (smoothNormalOS.w > 0.5)
+    {
+        extrudeNormalOS = normalize(lerp(normalOS, smoothNormalOS.xyz, saturate(smoothNormalStrength)));
+    }
+#endif
+
+    return extrudeNormalOS;
+}
+
 float4 DToon_OutlineClipPos(
     float3 positionOS,
     float3 normalOS,

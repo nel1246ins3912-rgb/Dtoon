@@ -34,6 +34,8 @@ namespace DToon
             MaterialProperty outlineDarkening = FindProperty("_OutlineDarkening", properties);
             MaterialProperty outlineDistanceScale = FindProperty("_OutlineDistanceScale", properties);
             MaterialProperty outlineMaxWidth = FindProperty("_OutlineMaxWidth", properties);
+            MaterialProperty useSmoothNormal = FindProperty("_UseSmoothNormal", properties);
+            MaterialProperty smoothNormalStrength = FindProperty("_SmoothNormalStrength", properties);
 
             MaterialProperty rimEnable = FindProperty("_RimEnable", properties);
             MaterialProperty rimLightAware = FindProperty("_RimLightAware", properties);
@@ -60,7 +62,7 @@ namespace DToon
 
             DrawBase(materialEditor, baseMap, baseColor);
             DrawCelShading(materialEditor, rampMap, rampOffset, shadowTint, receiveShadowsStrength);
-            DrawOutline(materialEditor, outlineEnable, outlineWidth, outlineDarkening, outlineDistanceScale, outlineMaxWidth);
+            DrawOutline(materialEditor, outlineEnable, outlineWidth, outlineDarkening, outlineDistanceScale, outlineMaxWidth, useSmoothNormal, smoothNormalStrength);
             DrawRim(materialEditor, rimEnable, rimLightAware, rimColor, rimIntensity, rimPower, rimSoftness);
             DrawMatcap(materialEditor, matcapEnable, matcapMode, matcapTex, matcapColor, matcapIntensity);
             DrawSpecular(materialEditor, specularEnable, specularColor, specularIntensity, specularPower, specularThreshold, specularSoftness);
@@ -112,7 +114,9 @@ namespace DToon
             MaterialProperty outlineWidth,
             MaterialProperty outlineDarkening,
             MaterialProperty outlineDistanceScale,
-            MaterialProperty outlineMaxWidth
+            MaterialProperty outlineMaxWidth,
+            MaterialProperty useSmoothNormal,
+            MaterialProperty smoothNormalStrength
         )
         {
             outlineFoldout = DrawFoldout(outlineFoldout, "Outline");
@@ -131,6 +135,12 @@ namespace DToon
                 materialEditor.ShaderProperty(outlineDarkening, outlineDarkening.displayName);
                 materialEditor.ShaderProperty(outlineDistanceScale, outlineDistanceScale.displayName);
                 materialEditor.ShaderProperty(outlineMaxWidth, outlineMaxWidth.displayName);
+                materialEditor.ShaderProperty(useSmoothNormal, useSmoothNormal.displayName);
+                SyncSmoothNormalKeywords(materialEditor);
+
+                EditorGUI.BeginDisabledGroup(!IsToggleEnabled(useSmoothNormal));
+                materialEditor.ShaderProperty(smoothNormalStrength, smoothNormalStrength.displayName);
+                EditorGUI.EndDisabledGroup();
                 EditorGUI.EndDisabledGroup();
             }
         }
@@ -263,11 +273,17 @@ namespace DToon
             SyncMatcapKeywords(materialEditor);
             SyncSpecularKeywords(materialEditor);
             SyncAlphaClipKeywords(materialEditor);
+            SyncSmoothNormalKeywords(materialEditor);
         }
 
         private static void SyncOutlineKeywords(MaterialEditor materialEditor)
         {
             SyncKeyword(materialEditor, "_OutlineEnable", "_OUTLINE");
+        }
+
+        private static void SyncSmoothNormalKeywords(MaterialEditor materialEditor)
+        {
+            SyncKeyword(materialEditor, "_UseSmoothNormal", "_USE_SMOOTH_NORMAL");
         }
 
         private static void SyncRimKeywords(MaterialEditor materialEditor)

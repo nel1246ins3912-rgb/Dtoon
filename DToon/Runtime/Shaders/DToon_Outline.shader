@@ -15,6 +15,8 @@ Shader "DToon/Outline"
         _OutlineDarkening   ("Outline Darkening", Range(0, 1)) = 0.3
         _OutlineDistanceScale ("Distance Scale", Range(0, 2)) = 1.0
         _OutlineMaxWidth    ("Max Outline Width", Range(0, 0.5)) = 0.05
+        [Toggle(_USE_SMOOTH_NORMAL)] _UseSmoothNormal ("Use Baked Smooth Normals", Float) = 0
+        _SmoothNormalStrength ("Smooth Normal Strength", Range(0, 1)) = 1
         [HideInInspector] _OutlineCull ("Outline Cull", Float) = 0
         [HideInInspector] _OutlineZTest ("Outline ZTest", Float) = 8
 
@@ -47,6 +49,7 @@ Shader "DToon/Outline"
             #pragma vertex   DToonOutlineOnly_Vert
             #pragma fragment DToonOutlineOnly_Frag
             #pragma shader_feature_local _OUTLINE_ALPHACLIP
+            #pragma multi_compile _ _USE_SMOOTH_NORMAL
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "../ShaderLibrary/ToonCore.hlsl"
             #include "../ShaderLibrary/ToonOutline.hlsl"
@@ -57,6 +60,8 @@ Shader "DToon/Outline"
                 float   _OutlineDarkening;
                 float   _OutlineDistanceScale;
                 float   _OutlineMaxWidth;
+                float   _UseSmoothNormal;
+                float   _SmoothNormalStrength;
                 float   _OutlineAlphaClip;
                 float4  _BaseMap_ST;
                 half4   _BaseColor;
@@ -72,6 +77,7 @@ Shader "DToon/Outline"
                 float4 positionOS : POSITION;
                 float3 normalOS   : NORMAL;
                 float2 uv         : TEXCOORD0;
+                float4 smoothNormalOS : TEXCOORD3;
             };
 
             struct Varyings
@@ -83,9 +89,14 @@ Shader "DToon/Outline"
             Varyings DToonOutlineOnly_Vert(Attributes IN)
             {
                 Varyings OUT = (Varyings)0;
+                float3 extrudeNormalOS = DToon_SelectOutlineNormalOS(
+                    IN.normalOS,
+                    IN.smoothNormalOS,
+                    _SmoothNormalStrength
+                );
                 OUT.positionHCS = DToon_OutlineClipPos(
                     IN.positionOS.xyz,
-                    IN.normalOS,
+                    extrudeNormalOS,
                     _OutlineWidth,
                     _OutlineDistanceScale,
                     _OutlineMaxWidth

@@ -40,6 +40,7 @@ namespace DToon.Editor.Harness
         private const string Step4RimCloseupNoOutlineTestName = "Step4_Rim_Closeup_NoOutline";
         private const string Step4MatcapCloseupTestName = "Step4_Matcap_Closeup";
         private const string Step4SpecularCloseupTestName = "Step4_Specular_Closeup";
+        private const string Step6SmoothNormalCubeBakeTestName = "Step6_SmoothNormal_CubeBake";
         private const string DToonTestMaterialPath = "Assets/DToon/Samples/Harness/_Common/Materials/M_DToon_Test_Generic.mat";
         private const string DToonHairMaterialPath = "Assets/DToon/Samples/Harness/_Common/Materials/M_DToon_Test_Hair.mat";
         private const string DToonOutlineMaterialPath = "Assets/DToon/Samples/Harness/_Common/Materials/M_DToon_Test_Outline.mat";
@@ -158,6 +159,14 @@ namespace DToon.Editor.Harness
                         throw new Exception("Ramp texture generator menu is missing.");
 
                     Log("[Harness] RampTextureGenerator menu OK");
+                    exitCode = 0;
+                    return;
+                }
+
+                if (testName == Step6SmoothNormalCubeBakeTestName)
+                {
+                    string reportPath = SmoothNormalBaker.WriteCubeBakeReportForHarness();
+                    Log("[Harness] SmoothNormalBaker cube report -> " + reportPath);
                     exitCode = 0;
                     return;
                 }

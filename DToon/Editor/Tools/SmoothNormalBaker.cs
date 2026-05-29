@@ -3,14 +3,15 @@
 //  ----------------------------------------------------------------------------
 //  Bakes averaged object-space normals into UV4 (TEXCOORD3).
 //
-//  DToon uses this channel as a clean shadow-normal source so toon shadow
-//  borders follow the character volume instead of hard mesh splits, UV seams,
-//  or detailed normal-map noise.
+//  DToon consumes this channel in the outline pass when _USE_SMOOTH_NORMAL
+//  is enabled. xyz stores the baked object-space normal; w=1 marks the
+//  channel as valid so shaders can fall back to authored normals otherwise.
 // ============================================================================
 
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
 
@@ -37,6 +38,89 @@ namespace DToon.Editor.Tools
         public static void BakeSelectedRenderersToMeshNormals()
         {
             BakeSelectedRenderers(BakeTarget.MeshNormals);
+        }
+
+        public static string WriteCubeBakeReportForHarness()
+        {
+            string projectRoot = Directory.GetParent(Application.dataPath).FullName;
+            string outputDir = Path.Combine(projectRoot, "HarnessOutput");
+            Directory.CreateDirectory(outputDir);
+
+            string reportPath = Path.Combine(outputDir, "SmoothNormal_CubeReport.txt");
+            Mesh cube = CreateHardEdgedCubeForHarness();
+
+            try
+            {
+                Vector3[] vertices = cube.vertices;
+                Vector3[] originalNormals = cube.normals;
+                BakeSmoothNormalsToUv4(cube);
+
+                List<Vector4> smoothUv4 = new List<Vector4>(vertices.Length);
+                cube.GetUVs(SmoothNormalUvChannel, smoothUv4);
+                AssertTrue(smoothUv4.Count == vertices.Length, "UV4 count must match vertex count.");
+
+                Dictionary<VertexPositionKey, List<int>> groups = BuildPositionGroups(vertices);
+                AssertTrue(groups.Count == 8, "Hard-edged cube must have 8 shared corner positions.");
+
+                List<List<int>> sortedGroups = new List<List<int>>(groups.Values);
+                sortedGroups.Sort((a, b) => CompareVector3(vertices[a[0]], vertices[b[0]]));
+
+                StringBuilder report = new StringBuilder();
+                report.AppendLine("DToon SmoothNormalBaker cube report");
+                report.AppendLine("Channel: UV4 / TEXCOORD3");
+                report.AppendLine("Contract: xyz = object-space smooth normal, w = 1 valid marker");
+                report.AppendLine("VertexCount: " + vertices.Length);
+                report.AppendLine("CornerGroups: " + groups.Count);
+                report.AppendLine();
+
+                for (int groupIndex = 0; groupIndex < sortedGroups.Count; groupIndex++)
+                {
+                    List<int> indices = sortedGroups[groupIndex];
+                    AssertTrue(indices.Count == 3, "Each hard-edged cube corner must have 3 split vertices.");
+
+                    Vector3 expected = Vector3.zero;
+                    for (int i = 0; i < indices.Count; i++)
+                    {
+                        expected += originalNormals[indices[i]];
+                    }
+                    expected.Normalize();
+
+                    Vector4 firstSmooth = smoothUv4[indices[0]];
+                    Vector3 firstSmoothNormal = new Vector3(firstSmooth.x, firstSmooth.y, firstSmooth.z);
+                    AssertApproximately(firstSmoothNormal, expected, 0.0001f, "Smoothed corner normal must match normalized face-normal sum.");
+
+                    report.AppendLine("Corner " + groupIndex + " position " + FormatVector3(vertices[indices[0]]));
+                    report.AppendLine("  expected " + FormatVector3(expected));
+
+                    for (int i = 0; i < indices.Count; i++)
+                    {
+                        int vertexIndex = indices[i];
+                        Vector4 smooth = smoothUv4[vertexIndex];
+                        Vector3 smoothNormal = new Vector3(smooth.x, smooth.y, smooth.z);
+
+                        AssertApproximately(smoothNormal, firstSmoothNormal, 0.0001f, "Split vertices at one corner must share identical smooth normals.");
+                        AssertApproximately(smoothNormal, expected, 0.0001f, "Every split vertex must match the expected corner normal.");
+                        AssertTrue(Mathf.Abs(smooth.w - 1.0f) <= 0.0001f, "Smooth normal UV4 w marker must be 1.");
+
+                        report.AppendLine(
+                            "  v" + vertexIndex +
+                            " original " + FormatVector3(originalNormals[vertexIndex]) +
+                            " smooth " + FormatVector3(smoothNormal) +
+                            " w " + smooth.w.ToString("0.000")
+                        );
+                    }
+
+                    report.AppendLine();
+                }
+
+                report.AppendLine("Assertions: PASS");
+                File.WriteAllText(reportPath, report.ToString());
+                return reportPath;
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(cube);
+            }
         }
 
         private static void BakeSelectedRenderers(BakeTarget bakeTarget)
@@ -345,11 +429,13 @@ namespace DToon.Editor.Tools
                 }
 
                 Undo.RecordObject(material, "Configure DToon Smooth Normal");
-                material.SetFloat("_UseSmoothNormal", bakeTarget == BakeTarget.Uv4 ? 1.0f : 0.0f);
+                bool useSmoothNormal = bakeTarget == BakeTarget.Uv4;
+                material.SetFloat("_UseSmoothNormal", useSmoothNormal ? 1.0f : 0.0f);
+                SetKeyword(material, "_USE_SMOOTH_NORMAL", useSmoothNormal);
 
                 if (material.HasProperty("_SmoothNormalStrength"))
                 {
-                    material.SetFloat("_SmoothNormalStrength", bakeTarget == BakeTarget.Uv4 ? 1.0f : 0.0f);
+                    material.SetFloat("_SmoothNormalStrength", useSmoothNormal ? 1.0f : 0.0f);
                 }
 
                 EditorUtility.SetDirty(material);
@@ -392,6 +478,109 @@ namespace DToon.Editor.Tools
                     return hash;
                 }
             }
+        }
+
+        private static Dictionary<VertexPositionKey, List<int>> BuildPositionGroups(Vector3[] vertices)
+        {
+            Dictionary<VertexPositionKey, List<int>> groups = new Dictionary<VertexPositionKey, List<int>>(vertices.Length);
+            for (int i = 0; i < vertices.Length; i++)
+            {
+                VertexPositionKey key = new VertexPositionKey(vertices[i]);
+                List<int> indices;
+                if (!groups.TryGetValue(key, out indices))
+                {
+                    indices = new List<int>(3);
+                    groups.Add(key, indices);
+                }
+
+                indices.Add(i);
+            }
+
+            return groups;
+        }
+
+        private static Mesh CreateHardEdgedCubeForHarness()
+        {
+            Vector3[] vertices =
+            {
+                new Vector3( 0.5f, -0.5f, -0.5f), new Vector3( 0.5f, -0.5f,  0.5f), new Vector3( 0.5f,  0.5f,  0.5f), new Vector3( 0.5f,  0.5f, -0.5f),
+                new Vector3(-0.5f, -0.5f,  0.5f), new Vector3(-0.5f, -0.5f, -0.5f), new Vector3(-0.5f,  0.5f, -0.5f), new Vector3(-0.5f,  0.5f,  0.5f),
+                new Vector3(-0.5f,  0.5f, -0.5f), new Vector3( 0.5f,  0.5f, -0.5f), new Vector3( 0.5f,  0.5f,  0.5f), new Vector3(-0.5f,  0.5f,  0.5f),
+                new Vector3(-0.5f, -0.5f,  0.5f), new Vector3( 0.5f, -0.5f,  0.5f), new Vector3( 0.5f, -0.5f, -0.5f), new Vector3(-0.5f, -0.5f, -0.5f),
+                new Vector3( 0.5f, -0.5f,  0.5f), new Vector3(-0.5f, -0.5f,  0.5f), new Vector3(-0.5f,  0.5f,  0.5f), new Vector3( 0.5f,  0.5f,  0.5f),
+                new Vector3(-0.5f, -0.5f, -0.5f), new Vector3( 0.5f, -0.5f, -0.5f), new Vector3( 0.5f,  0.5f, -0.5f), new Vector3(-0.5f,  0.5f, -0.5f),
+            };
+
+            Vector3[] normals =
+            {
+                Vector3.right, Vector3.right, Vector3.right, Vector3.right,
+                Vector3.left, Vector3.left, Vector3.left, Vector3.left,
+                Vector3.up, Vector3.up, Vector3.up, Vector3.up,
+                Vector3.down, Vector3.down, Vector3.down, Vector3.down,
+                Vector3.forward, Vector3.forward, Vector3.forward, Vector3.forward,
+                Vector3.back, Vector3.back, Vector3.back, Vector3.back,
+            };
+
+            int[] triangles =
+            {
+                0, 1, 2, 0, 2, 3,
+                4, 5, 6, 4, 6, 7,
+                8, 9, 10, 8, 10, 11,
+                12, 13, 14, 12, 14, 15,
+                16, 17, 18, 16, 18, 19,
+                20, 21, 22, 20, 22, 23
+            };
+
+            Mesh mesh = new Mesh
+            {
+                name = "DToon_HardEdgedCube_ForSmoothNormalHarness"
+            };
+            mesh.vertices = vertices;
+            mesh.normals = normals;
+            mesh.triangles = triangles;
+            return mesh;
+        }
+
+        private static int CompareVector3(Vector3 a, Vector3 b)
+        {
+            int x = a.x.CompareTo(b.x);
+            if (x != 0) return x;
+            int y = a.y.CompareTo(b.y);
+            if (y != 0) return y;
+            return a.z.CompareTo(b.z);
+        }
+
+        private static void AssertApproximately(Vector3 actual, Vector3 expected, float tolerance, string message)
+        {
+            if ((actual - expected).magnitude > tolerance)
+            {
+                throw new InvalidOperationException(message + " actual=" + FormatVector3(actual) + " expected=" + FormatVector3(expected));
+            }
+        }
+
+        private static void AssertTrue(bool condition, string message)
+        {
+            if (!condition)
+            {
+                throw new InvalidOperationException(message);
+            }
+        }
+
+        private static void SetKeyword(Material material, string keyword, bool enabled)
+        {
+            if (enabled)
+            {
+                material.EnableKeyword(keyword);
+            }
+            else
+            {
+                material.DisableKeyword(keyword);
+            }
+        }
+
+        private static string FormatVector3(Vector3 value)
+        {
+            return "(" + value.x.ToString("0.000") + ", " + value.y.ToString("0.000") + ", " + value.z.ToString("0.000") + ")";
         }
     }
 }

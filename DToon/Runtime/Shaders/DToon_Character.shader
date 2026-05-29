@@ -33,6 +33,8 @@ Shader "DToon/Character"
         _OutlineDarkening   ("Outline Color Darkening", Range(0, 1)) = 0.3
         _OutlineDistanceScale ("Distance Scale (0=fixed world, 1=screen-space)", Range(0, 2)) = 1.0
         _OutlineMaxWidth    ("Max Outline Width (world units)", Range(0, 0.5)) = 0.05
+        [Toggle(_USE_SMOOTH_NORMAL)] _UseSmoothNormal ("Use Baked Smooth Normals", Float) = 0
+        _SmoothNormalStrength ("Smooth Normal Strength", Range(0, 1)) = 1
 
         [Header(Rim Light)]
         [Toggle(_RIM)] _RimEnable ("Enable Rim Light", Float) = 1
@@ -128,6 +130,7 @@ Shader "DToon/Character"
             #pragma shader_feature_local _OUTLINE
             #pragma shader_feature_local _ALPHACLIP
             #pragma shader_feature_local _ALPHATEST_ON
+            #pragma multi_compile _ _USE_SMOOTH_NORMAL
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "../ShaderLibrary/ToonCore.hlsl"
@@ -146,6 +149,8 @@ Shader "DToon/Character"
                 float   _OutlineDarkening;
                 float   _OutlineDistanceScale;
                 float   _OutlineMaxWidth;
+                float   _UseSmoothNormal;
+                float   _SmoothNormalStrength;
                 float   _RimEnable;
                 float   _RimLightAware;
                 float4  _RimColor;
@@ -172,6 +177,7 @@ Shader "DToon/Character"
                 float4 positionOS : POSITION;
                 float3 normalOS   : NORMAL;
                 float2 uv         : TEXCOORD0;
+                float4 smoothNormalOS : TEXCOORD3;
             };
 
             struct Varyings
@@ -184,9 +190,14 @@ Shader "DToon/Character"
             {
                 Varyings OUT = (Varyings)0;
             #if defined(_OUTLINE)
+                float3 extrudeNormalOS = DToon_SelectOutlineNormalOS(
+                    IN.normalOS,
+                    IN.smoothNormalOS,
+                    _SmoothNormalStrength
+                );
                 OUT.positionHCS = DToon_OutlineClipPos(
                     IN.positionOS.xyz,
-                    IN.normalOS,
+                    extrudeNormalOS,
                     _OutlineWidth,
                     _OutlineDistanceScale,
                     _OutlineMaxWidth
@@ -255,6 +266,8 @@ Shader "DToon/Character"
                 float   _OutlineDarkening;
                 float   _OutlineDistanceScale;
                 float   _OutlineMaxWidth;
+                float   _UseSmoothNormal;
+                float   _SmoothNormalStrength;
                 float   _RimEnable;
                 float   _RimLightAware;
                 float4  _RimColor;
