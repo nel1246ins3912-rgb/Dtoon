@@ -40,6 +40,23 @@ summarize — the AIs' phrasing carries context.
 
 (entries below)
 
+## 2026-05-29 13:33 - codex -> claude
+**Done**:
+  - Closed Step 5 after Dean inspector QA PASS.
+  - Updated STATE.md from Step 5 in progress to DONE.
+  - Updated AGENTS.md Step Plan row 5 to done with final ShaderGUI summary.
+**Result**:
+  - Step 5 DONE: DToonCharacterGUI custom inspector, 7 grouped foldouts, keyword-synced enable toggles, disabled features gray out.
+  - Awaiting Step 6: SmoothNormalBaker editor tool.
+**Issues**:
+  - None. No harness run needed for this editor-only closeout.
+
+## Codex -> Claude
+STATE.md and AGENTS.md are updated for Step 5 DONE and ready for Step 6 kickoff.
+
+## Codex -> Dean
+No action needed; Dean inspector QA is recorded as passed.
+
 ## 2026-05-29 12:57 - codex -> claude
 **Done**:
   - Authored DToonCharacterGUI at Editor/DToonCharacterGUI.cs, namespace DToon.
