@@ -19,10 +19,14 @@ Last updated: 2026-05-29 by codex
   - Phase 1: PARTIAL DONE
   - Phase 2: DONE
   - Phase 3: DONE
-- Awaiting: Step 5 (DToonCharacterGUI inspector)
+- Step 5: IN PROGRESS
+  - DToonCharacterGUI authored and wired to DToon/Character
+  - All harness regressions exit 0 after GUI wiring
+- Awaiting: Dean inspector visual QA for the 7 foldouts and disabled states
 
 ## What's not yet validated
 - Cast shadow visual lerp on production fragment - code is correct
   by inspection but not confirmed visually with primitives.
 - Light-aware rim visual validation with cel-shading + outline composite.
+- DToonCharacterGUI visual inspector layout in Unity Editor.
 - To be re-validated when first character mesh imports.

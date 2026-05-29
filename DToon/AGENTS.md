@@ -114,7 +114,7 @@ them in the inspector.
 | 4 Phase 1 | partial done | Rim light infrastructure (DToon_RimMask, uniform + light-aware modes, _RimColor with HDR support, _RimPower/Intensity/Softness properties). Step4_Rim_Closeup reference registered with uniform mode. Light-aware visual deferred to character import. |
 | 4 Phase 2 | done | Matcap with Additive/Multiplicative/Lerp composition modes, view-space normal sampling, MatcapGenerator utility producing 4 default matcaps (Eye_Glossy, Metal_Chrome, Skin_Soft, Cloth_Velvet). Step4_Matcap_Closeup reference registered. Phase 1 PARTIAL retained. |
 | 4 Phase 3 | done | Stepped specular: pow(NdotH,power) Blinn-Phong peak then smoothstep AA in specRaw space. Per-material Power/Threshold/Softness/Intensity. 4 test materials (Metal/Skin/Plastic/Hair) with differentiated highlights. Step4_Specular_Closeup reference registered. |
-| 5 | pending | `DToonCharacterGUI` custom material inspector |
+| 5 | in progress | `DToonCharacterGUI` custom material inspector authored with 7 foldouts (Base, Cel Shading, Outline, Rim, Matcap, Specular, Alpha Clip), explicit keyword sync, and disabled groups for inactive features. Harness regressions pass; pending Dean inspector visual QA. |
 | 6 | pending | `SmoothNormalBaker` editor tool |
 | 7 | pending | ILM texture system |
 | 8 | pending | SDF face shadow |

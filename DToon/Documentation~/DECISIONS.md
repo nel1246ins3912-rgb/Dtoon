@@ -144,3 +144,15 @@ hard step (aliases on curves).
 anti-aliases the cel edge. Matches NiloToon/lilToon. Visual PASS on
 x2-intensity 4-sphere harness, Claude-approved.
 **Reversibility**: easy - one-block edit in ToonSpecular.hlsl.
+
+## 2026-05-29 - Step 5 inspector layout: disabled controls remain visible
+**Decision**: DToonCharacterGUI keeps inactive feature controls visible
+but grayed out via disabled groups instead of hiding them.
+**Alternatives considered**:
+  - Hide inactive controls entirely
+  - Keep every control editable regardless of feature toggle
+**Rationale**: Artists can discover available controls without enabling
+each feature, while disabled state still communicates which properties
+currently affect rendering. This matches the Step 5 foldout spec and
+keeps the inspector educational without changing material values.
+**Reversibility**: easy - one-block GUI edit per foldout section.

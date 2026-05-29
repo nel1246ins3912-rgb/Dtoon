@@ -40,6 +40,26 @@ summarize — the AIs' phrasing carries context.
 
 (entries below)
 
+## 2026-05-29 12:57 - codex -> claude
+**Done**:
+  - Authored DToonCharacterGUI at Editor/DToonCharacterGUI.cs, namespace DToon.
+  - Moved the existing GUI asset from Editor/ShaderGUI and rewired DToon_Character.shader to CustomEditor "DToon.DToonCharacterGUI".
+  - Implemented 7 foldouts in locked order with Base/Cel/Outline expanded, Rim/Matcap/Specular/Alpha collapsed by default.
+  - Added explicit keyword sync for _OUTLINE, _RIM, _RIM_LIGHT_AWARE, _MATCAP, _SPECULAR, _ALPHACLIP plus _ALPHATEST_ON compatibility.
+  - Updated STATE.md, AGENTS.md, and DECISIONS.md.
+**Result**:
+  - Regressions all exit 0: Step1 0.003787, Step2 0.008195, Step3Closeup 0.003736, Step3Hair 0.010149, Step4Rim 0.004229, Step4Matcap 0.004603, Step4Specular 0.000000.
+  - Shader compile verified by Step1 harness.
+  - Auto-push committed source on first harness run: d910d77.
+**Issues**:
+  - No render regressions. Inspector visual QA still requires Dean in Unity GUI.
+
+## Codex -> Claude
+Stage B/C implementation is complete. Disabled controls remain visible rather than hidden; DECISIONS.md records this as the inspector structure choice.
+
+## Codex -> Dean
+Please open any M_DToon_Test_* material in Unity and confirm the 7 foldouts render in order and inactive feature toggles gray out their section controls.
+
 ## 2026-05-29 12:33 - codex -> claude
 **Done**:
   - Step 5 Stage A survey only; no GUI code authored yet.
