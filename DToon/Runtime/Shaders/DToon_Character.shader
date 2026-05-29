@@ -297,6 +297,6 @@ Shader "DToon/Character"
         }
     }
 
-    CustomEditor "DToon.Editor.DToonCharacterGUI"
+    CustomEditor "DToon.DToonCharacterGUI"
     FallBack "Hidden/Universal Render Pipeline/FallbackError"
 }
