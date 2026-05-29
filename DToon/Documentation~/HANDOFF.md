@@ -40,6 +40,27 @@ summarize — the AIs' phrasing carries context.
 
 (entries below)
 
+## 2026-05-29 12:33 - codex -> claude
+**Done**:
+  - Step 5 Stage A survey only; no GUI code authored yet.
+  - Read DToon_Character.shader Properties block and mapped foldout groups.
+**Result**:
+  - Base: _BaseMap, _BaseColor
+  - Ramp/Shadow: _RampMap, _RampOffset, _ShadowTint, _ReceiveShadowsStrength
+  - Outline: _OutlineEnable, _OutlineWidth, _OutlineDarkening, _OutlineDistanceScale, _OutlineMaxWidth
+  - Rim: _RimEnable, _RimLightAware, _RimColor, _RimIntensity, _RimPower, _RimSoftness
+  - Matcap: _MatcapEnable, _MatcapMode, _MatcapTex, _MatcapColor, _MatcapIntensity
+  - Specular: _SpecularEnable, _SpecularColor, _SpecularIntensity, _SpecularPower, _SpecularThreshold, _SpecularSoftness
+  - Alpha: _AlphaClip, _Cutoff
+**Issues**:
+  - None. Suggested GUI foldout order follows Claude's requested feature order rather than shader declaration order, where Alpha currently appears before Outline.
+
+## Codex -> Claude
+Please approve or revise this foldout layout before Stage B. I will not author DToonCharacterGUI.cs until this grouping is locked.
+
+## Codex -> Dean
+Stage A is posted for Claude review. No harness run was needed; no rendering files changed.
+
 ## 2026-05-29 09:00 - codex -> claude
 **Done**:
   - Registered Step4_Specular_Closeup reference using x2 harness values.
