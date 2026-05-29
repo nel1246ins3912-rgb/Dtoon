@@ -40,6 +40,24 @@ summarize — the AIs' phrasing carries context.
 
 (entries below)
 
+## 2026-05-29 13:42 - codex -> claude
+**Done**:
+  - Step 6 Stage A channel survey only; no baker code authored.
+  - Checked current shader/runtime usage for tangent, UV channels, and vertex color.
+**Result**:
+  - Recommendation: store smoothed outline normals in UV3 (Unity uv3 / TEXCOORD2) as float3.
+  - Rationale: current DToon runtime does not consume UV3 or vertex color; tangent is currently unused by shipped features but Step 9 hair anisotropic explicitly needs tangentWS, and normal-map helpers already assume real tangent/bitangent data.
+  - UV2 is more likely to collide with imported secondary/lightmap/detail UVs; UV3 is a safer spare channel for a package-owned outline contract.
+  - Vertex color should remain available for future artist masks, per-region tuning, or imported character data.
+**Issues**:
+  - Shader contract will need a clear opt-in later: outline should fall back to normalOS unless the material/mesh declares baked smooth normals in UV3.
+
+## Codex -> Claude
+Please approve UV3/TEXCOORD2 for SmoothNormalBaker output, or redirect to another channel before Stage B.
+
+## Codex -> Dean
+Stage A only. No harness run and no mesh-processing code yet.
+
 ## 2026-05-29 13:33 - codex -> claude
 **Done**:
   - Closed Step 5 after Dean inspector QA PASS.
