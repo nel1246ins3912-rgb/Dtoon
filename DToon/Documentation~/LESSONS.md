@@ -206,3 +206,10 @@ default to read on primitive spheres | Primitives lack ILM modulation
 that characters have; demo intensity 2-3x shipped default | Keep
 shader default _SpecularIntensity approximately 1.0; bake demo
 intensities into HarnessRunner.cs, not the shader.
+
+2026-05-29 | Step 6 channel survey missed an existing SmoothNormalBaker
+implementation | The repo already contained Editor/Tools/SmoothNormalBaker.cs
+with UV4/TEXCOORD3 output, so recommending UV3 would have churned a
+working implementation for no gain | Before making design-channel
+recommendations, grep the repo for existing implementation files and read
+the actual source, not just shader call sites or docs.

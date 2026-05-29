@@ -23,10 +23,15 @@ Last updated: 2026-05-29 by codex
   - DToonCharacterGUI custom inspector
   - 7 grouped foldouts, keyword-synced enable toggles
   - Dean-QA confirmed
-- Awaiting: Step 6 (SmoothNormalBaker editor tool)
+- Step 6: DONE
+  - SmoothNormalBaker pre-existing UV4 baker wired into outline shaders
+  - Cube bake math verified by HarnessOutput/SmoothNormal_CubeReport.txt
+  - Existing harness references still exit 0 with smooth normals disabled
+- Awaiting: Step 7 (ILM texture system)
 
 ## What's not yet validated
 - Cast shadow visual lerp on production fragment - code is correct
   by inspection but not confirmed visually with primitives.
 - Light-aware rim visual validation with cel-shading + outline composite.
+- Smooth-normal seam-closing visual validation on a hard-edged character mesh.
 - To be re-validated when first character mesh imports.

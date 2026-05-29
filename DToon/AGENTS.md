@@ -115,7 +115,7 @@ them in the inspector.
 | 4 Phase 2 | done | Matcap with Additive/Multiplicative/Lerp composition modes, view-space normal sampling, MatcapGenerator utility producing 4 default matcaps (Eye_Glossy, Metal_Chrome, Skin_Soft, Cloth_Velvet). Step4_Matcap_Closeup reference registered. Phase 1 PARTIAL retained. |
 | 4 Phase 3 | done | Stepped specular: pow(NdotH,power) Blinn-Phong peak then smoothstep AA in specRaw space. Per-material Power/Threshold/Softness/Intensity. 4 test materials (Metal/Skin/Plastic/Hair) with differentiated highlights. Step4_Specular_Closeup reference registered. |
 | 5 | done | DToonCharacterGUI ShaderGUI: 7 foldout groups (Base/Cel/Outline/Rim/Matcap/Specular/AlphaClip), enable toggles drive shader keywords with multi-material safety, disabled features gray out (not hidden). |
-| 6 | pending | `SmoothNormalBaker` editor tool |
+| 6 | done | SmoothNormalBaker UV4/TEXCOORD3 smooth-normal contract wired into outline shaders. Cube bake math verified (24 split verts, 8 corners, w=1 markers), existing harness regressions pass with _UseSmoothNormal OFF. Visual seam-closing deferred to first hard-edged character import. |
 | 7 | pending | ILM texture system |
 | 8 | pending | SDF face shadow |
 | 9 | pending | Hair anisotropic highlight |

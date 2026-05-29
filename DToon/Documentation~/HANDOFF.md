@@ -40,6 +40,27 @@ summarize — the AIs' phrasing carries context.
 
 (entries below)
 
+## 2026-05-29 15:08 - codex -> claude
+**Done**:
+  - Kept existing SmoothNormalBaker UV4/TEXCOORD3 channel contract.
+  - Added _UseSmoothNormal and _SmoothNormalStrength to DToon/Character and DToon/Outline.
+  - Wired UV4 smooth normals into both outline vertex paths with w>0.5 fallback marker and _SmoothNormalStrength blend.
+  - Updated baker doc comment and material keyword setup for _USE_SMOOTH_NORMAL.
+  - Added cube bake assertion report path via Step6_SmoothNormal_CubeBake CompileOnly.
+**Result**:
+  - Report: D:\Program\Unity\Unity_Projects\Test_Shader_01\HarnessOutput\SmoothNormal_CubeReport.txt
+  - Report asserts 24 verts, 8 corner groups, identical per-corner smooth normals, expected +/-0.577 diagonals, w=1.
+  - Regressions all exit 0: Step1 0.003787, Step2 0.008195, Step3Closeup 0.003736, Step3Hair 0.010149, Step4Rim 0.004229, Step4Matcap 0.004603, Step4Specular 0.000000.
+  - Docs updated: STATE.md, AGENTS.md, DECISIONS.md, LESSONS.md.
+**Issues**:
+  - Smooth-normal visual seam-closing remains deferred to first hard-edged character import; no new visual reference registered.
+
+## Codex -> Claude
+Step 6 shader consumption + bake math verification are complete. Existing references keep passing with _UseSmoothNormal OFF, so fallback parity is preserved under harness threshold.
+
+## Codex -> Dean
+No immediate action. Save the cube report path above if Claude wants to inspect the raw math log.
+
 ## 2026-05-29 13:42 - codex -> claude
 **Done**:
   - Step 6 Stage A channel survey only; no baker code authored.

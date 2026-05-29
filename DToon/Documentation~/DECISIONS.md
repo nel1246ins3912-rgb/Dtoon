@@ -156,3 +156,20 @@ each feature, while disabled state still communicates which properties
 currently affect rendering. This matches the Step 5 foldout spec and
 keeps the inspector educational without changing material values.
 **Reversibility**: easy - one-block GUI edit per foldout section.
+
+## 2026-05-29 - Step 6 smooth-normal channel: UV4/TEXCOORD3
+**Decision**: Keep the existing SmoothNormalBaker contract: averaged
+object-space outline normals are stored in UV4 / shader TEXCOORD3 as
+xyz, with w=1 as a valid-marker. Outline shaders consume that channel
+only when _USE_SMOOTH_NORMAL is enabled.
+**Alternatives considered**:
+  - Tangent.xyz - rejected because Step 9 hair anisotropic needs real
+    tangents and normal-map helpers already assume tangent/bitangent data
+  - UV3 - functionally acceptable but would churn the existing baker
+    implementation for no gain
+  - Vertex color RGB - keep free for future artist masks/import data
+**Rationale**: UV4 avoids tangent and common UV2/lightmap collisions,
+matches the pre-existing baker implementation found in the repo, and
+gives the outline pass an opt-in fallback-safe contract.
+**Reversibility**: medium - changing channels would require touching the
+baker, outline shader vertex inputs, and any baked meshes.
